@@ -7,9 +7,9 @@ todo:
 - work around missing conditions (participant responses)
 - detect outliers and add to design matrix. DONE.
 """
-import re
 import os
 import os.path as op
+import sys
 from glob import glob
 from collections import Counter
 
@@ -25,19 +25,7 @@ from nistats.first_level_model import FirstLevelModel
 
 # Local imports
 import enhance_censoring as ec
-import utils
-
-
-def get_subjects():
-    in_dir = '/scratch/kbott/narps/'
-    fp_dir = op.join(in_dir, 'derivatives/fmriprep/')
-    subjects = sorted([op.basename(op.splitext(f)[0]) for f in
-                       glob(op.join(in_dir, 'derivatives/fmriprep/*.html'))])
-    return subjects
-
-
-def get_run(f):
-    return re.findall('(run-[0-9]+)_', f)[0]
+from utils import get_run, get_subjects, calhoun_correction
 
 
 def smooth_files(sub='sub-001'):
@@ -292,19 +280,19 @@ def run_first_level(sub='sub-001', mod='gain'):
             contrast_val, output_type='effect_size')
 
     print('Combining contrasts into magnitude images')
-    strongly_accept_mag = utils.calhoun_correction(
+    strongly_accept_mag = calhoun_correction(
         beta_maps['strongly_accept*'+mod],
         beta_maps['strongly_accept_derivative*'+mod],
         beta_maps['strongly_accept_dispersion*'+mod])
-    weakly_accept_mag = utils.calhoun_correction(
+    weakly_accept_mag = calhoun_correction(
         beta_maps['weakly_accept*'+mod],
         beta_maps['weakly_accept_derivative*'+mod],
         beta_maps['weakly_accept_dispersion*'+mod])
-    weakly_reject_mag = utils.calhoun_correction(
+    weakly_reject_mag = calhoun_correction(
         beta_maps['weakly_reject*'+mod],
         beta_maps['weakly_reject_derivative*'+mod],
         beta_maps['weakly_reject_dispersion*'+mod])
-    strongly_reject_mag = utils.calhoun_correction(
+    strongly_reject_mag = calhoun_correction(
         beta_maps['strongly_reject*'+mod],
         beta_maps['strongly_reject_derivative*'+mod],
         beta_maps['strongly_reject_dispersion*'+mod])
@@ -326,13 +314,11 @@ def run_first_level(sub='sub-001', mod='gain'):
     img_avg.to_filename(out_file)
 
 
-def run_first_levels():
-    subjects = get_subjects()
-    for sub in subjects[:1]:
+if __name__ == '__main__':
+    sub = sys.argv[1]
+    if sub in get_subjects():
         smooth_files(sub)
         run_first_level(sub, mod='gain')
         run_first_level(sub, mod='loss')
-
-
-if __name__ == '__main__':
-    run_first_levels()
+    else:
+        raise ValueError('{0} not found in get_subjects'.format(sub))

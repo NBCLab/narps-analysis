@@ -1,8 +1,29 @@
 """
 Miscellaneous utility functions
 """
+import re
+import os.path as op
+from glob import glob
+
 import numpy as np
 import nibabel as nib
+
+
+def get_run(file_):
+    """
+    Get run substring from filename
+    """
+    return re.findall('(run-[0-9]+)_', file_)[0]
+
+
+def get_subjects():
+    """
+    Get full list of subjects with fMRIPrep data
+    """
+    in_dir = '/scratch/kbott/narps/'
+    subjects = sorted([op.basename(op.splitext(f)[0]) for f in
+                       glob(op.join(in_dir, 'derivatives/fmriprep/*.html'))])
+    return subjects
 
 
 def calhoun_correction(can, temp, disp=None):
