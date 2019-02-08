@@ -12,6 +12,7 @@ import os.path as op
 import sys
 from glob import glob
 from collections import Counter
+import matplotlib.pyplot as plt
 
 import pandas as pd
 import numpy as np
@@ -89,16 +90,16 @@ def smooth_files(sub='sub-001'):
         smoothed_file = op.join(sub_out_dir,
                                 '{0}_task-MGT_{1}_space-MNI152NLin2009cAsym_'
                                 'desc-smoothed_bold.nii.gz'.format(sub, run))
+        if not op.isfile(smoothed_file):
+            sus = fsl.SUSAN()
+            sus.inputs.in_file = func_file
+            sus.inputs.brightness_threshold = brightness_threshold
+            sus.inputs.fwhm = fwhm
+            sus.inputs.out_file = smoothed_file
+            sus.run()
 
-        sus = fsl.SUSAN()
-        sus.inputs.in_file = func_files[run]
-        sus.inputs.brightness_threshold = brightness_threshold
-        sus.inputs.fwhm = fwhm
-        sus.inputs.out_file = smoothed_file
-        sus.run()
 
-
-def run_first_level(sub='sub-001', mod='gain'):
+def run_first_level(sub='sub-001'):
     """
     sub-003 is missing some conditions
     """
@@ -117,24 +118,27 @@ def run_first_level(sub='sub-001', mod='gain'):
     # Folders and files
     in_dir = '/scratch/kbott/narps/'
     fp_dir = op.join(in_dir, 'derivatives/fmriprep/')
-    sm_dir = op.join(in_dir, 'derivatives/fmriprep-smoothed/')
+    sm_dir = op.join(in_dir, 'derivatives/fmriprep-smoothing/')
     ev_dir = op.join(in_dir, 'event_tsvs')
-    out_dir = op.join(in_dir, 'derivatives/first-levels-{0}'.format(mod))
+    out_dir = op.join(in_dir, 'derivatives/first-levels')
     sub_out_dir = op.join(out_dir, sub)
     os.makedirs(sub_out_dir, exist_ok=True)
 
-    out_name = '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-{1}_betas.nii.gz'.format(sub, mod)
-    out_file = op.join(sub_out_dir, out_name)
+    out_gain_name = '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-gain_betas.nii.gz'.format(sub)
+    out_gain_file = op.join(sub_out_dir, out_gain_name)
+    out_loss_name = '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-loss_betas.nii.gz'.format(sub)
+    out_loss_file = op.join(sub_out_dir, out_loss_name)
 
     # Find files
     sub_func_dir = op.join(fp_dir, sub, 'func')
     sub_sm_dir = op.join(sm_dir, sub, 'func')
     smoothed_files = sorted(glob(op.join(
-        sub_sm_dir, '*_task-MGT_*space-MNI152NLin2009cAsym_desc-smoothed_bold.nii.gz.nii.gz')))
+        sub_sm_dir, '*_task-MGT_*space-MNI152NLin2009cAsym_desc-smoothed_bold.nii.gz')))
     brainmask = sorted(glob(op.join(
         sub_func_dir, '*_task-MGT_*space-MNI152NLin2009cAsym_brainmask.nii.gz')))[0]
     cf_files = sorted(glob(op.join(sub_func_dir, '*_task-MGT_*bold_confounds.tsv')))
     ev_files = sorted(glob(op.join(ev_dir, '{0}*.tsv'.format(sub))))
+
     # Check files to validate lazy searches
     assert len(smoothed_files) == len(cf_files) == len(ev_files)
     assert all([get_run(smoothed_files[i]) == get_run(cf_files[i]) == get_run(ev_files[i])
@@ -157,7 +161,7 @@ def run_first_level(sub='sub-001', mod='gain'):
         # Load in confounds
         cf_df = pd.read_csv(cf_files[i_run], sep='\t')
         fd = cf_df['FramewiseDisplacement'].values
-        fd[0] = 0  # replace nan
+        fd[0] = 0.  # replace nan
         cens_vec = ec.censor(fd, fd_thresh, n_contig=n_contig,
                              n_before=n_before, n_after=n_after)
 
@@ -172,34 +176,64 @@ def run_first_level(sub='sub-001', mod='gain'):
 
         # Build experimental paradigm
         ev_df = pd.read_csv(ev_files[i_run], sep='\t')
+        ev_df['trial_type'] = ev_df['participant_response'].map({'strongly_reject': 'response',
+                                                                 'weakly_reject': 'response',
+                                                                 'weakly_accept': 'response',
+                                                                 'strongly_accept': 'response',
+                                                                 'NoResp': 'no_response'})
         ev_df.loc[ev_df['RT'] == 0, 'RT'] = ev_df['duration']
         ev_df['duration'] = ev_df['RT']
-        ev_df['trial_type'] = ev_df['participant_response']
-        if i_run == 0:
-            count_df = ev_df.groupby('trial_type').count()
-        else:
-            count_df += ev_df.groupby('trial_type').count()
+        ev_df['response'] = ev_df['participant_response'].map({'strongly_reject': 0,
+                                                               'weakly_reject': 1,
+                                                               'weakly_accept': 2,
+                                                               'strongly_accept': 3,
+                                                               'NoResp': 0})
 
-        ev_df_mod = ev_df.copy()
-        # Mean center (necessary) and variance normalize (maybe useful?) modulator
-        ev_df_mod['modulation'] = (ev_df[mod] - ev_df[mod].mean()) / ev_df[mod].std()
+        ev_df_gain = ev_df.copy()
+        ev_df_loss = ev_df.copy()
+        ev_df_resp = ev_df.copy()
+        # Mean center (necessary) and variance normalize (maybe useful?) modulators
+        ev_df_gain['modulation'] = (ev_df['gain'] - \
+                                    ev_df.loc[ev_df['trial_type'] == 'response', 'gain'].mean()) / \
+                                   ev_df.loc[ev_df['trial_type'] == 'response', 'gain'].std()
+        ev_df_loss['modulation'] = (ev_df['loss'] - \
+                                    ev_df.loc[ev_df['trial_type'] == 'response', 'loss'].mean()) / \
+                                   ev_df.loc[ev_df['trial_type'] == 'response', 'loss'].std()
+        ev_df_resp['modulation'] = (ev_df['response'] - \
+                                    ev_df.loc[ev_df['trial_type'] == 'response', 'response'].mean()) / \
+                                   ev_df.loc[ev_df['trial_type'] == 'response', 'response'].std()
 
-        # Generate modulator design matrix to grab regressors from
-        dm_pm = make_first_level_design_matrix(
+        # Generate modulator design matrices to grab regressors from
+        reg_cols = ['response', 'response_derivative', 'response_dispersion']
+        gain_names = [col+'*gain' for col in reg_cols]
+        loss_names = [col+'*loss' for col in reg_cols]
+        resp_names = [col+'*response' for col in reg_cols]
+        dm_gain = make_first_level_design_matrix(
             frame_times,
-            ev_df_mod,
+            ev_df_gain,
             hrf_model=hrf_model,
             period_cut=period_cut,
             drift_model=drift_model
             )
-        cols = ev_df['participant_response'].unique()
-        reg_cols = []
-        for col in cols:
-            reg_cols.append(col)
-            reg_cols.append(col+'_derivative')
-            reg_cols.append(col+'_dispersion')
-
-        new_names = [col+'*'+mod for col in reg_cols]
+        dm_gain = dm_gain.add_suffix('*gain')
+        dm_loss = make_first_level_design_matrix(
+            frame_times,
+            ev_df_loss,
+            hrf_model=hrf_model,
+            period_cut=period_cut,
+            drift_model=drift_model
+            )
+        dm_loss = dm_loss.add_suffix('*loss')
+        dm_resp = make_first_level_design_matrix(
+            frame_times,
+            ev_df_resp,
+            hrf_model=hrf_model,
+            period_cut=period_cut,
+            drift_model=drift_model
+            )
+        dm_resp = dm_resp.add_suffix('*response')
+        
+        dm_mod = pd.concat((dm_gain, dm_loss, dm_resp), axis=1)
 
         # make main effect design matrix with modulators added
         dm = make_first_level_design_matrix(
@@ -208,38 +242,48 @@ def run_first_level(sub='sub-001', mod='gain'):
             hrf_model=hrf_model,
             period_cut=period_cut,
             drift_model=drift_model,
-            add_regs=dm_pm[reg_cols],
-            add_reg_names=new_names
+            add_regs=dm_mod[gain_names+loss_names+resp_names],
+            add_reg_names=gain_names+loss_names+resp_names
             )
 
         for i_vol in range(cens_arr.shape[1]):
             dm['censor_{0}'.format(i_vol)] = cens_arr[:, i_vol]
 
         # this list should be comprehensive
-        sort_order = ['weakly', 'strongly', 'NoResp', 'drift', 'censor', 'constant']
+        sort_order = ['response', 'no_response', 'censor', 'drift', 'constant']
         columns = [[c for c in dm.columns if c.startswith(so)] for so in sort_order]
         columns = [sorted(cols) for cols in columns]
         columns = [v for sl in columns for v in sl]
+        print(columns)
+        print(dm.columns)
         # Check that new list has same elements as old list (in diff order)
         assert Counter(dm.columns.tolist()) == Counter(columns)
         dm = dm[columns]
+        
+        # Save image of design matrix
+        run_name = get_run(smoothed_files[i_run])
+        dm_name = '{0}_task-MGT_{1}_designMatrix.png'.format(sub, run_name)
+        dm_file = op.join(sub_out_dir, dm_name)
+        fig, ax = plt.subplots(figsize=(20, 16))
+        plot_design_matrix(dm, ax=ax)
+        fig.savefig(dm_file, dpi=400)
+        dm_name = '{0}_task-MGT_{1}_designMatrix.tsv'.format(sub, run_name)
+        dm_file = op.join(sub_out_dir, dm_name)
+        dm.to_csv(dm_file, sep='\t', index=False)
 
         # put the design matrices in a list
         design_matrices.append(dm)
 
     contrasts = {
-        'strongly_reject*'+mod: [],
-        'strongly_reject_derivative*'+mod: [],
-        'strongly_reject_dispersion*'+mod: [],
-        'weakly_reject*'+mod: [],
-        'weakly_reject_derivative*'+mod: [],
-        'weakly_reject_dispersion*'+mod: [],
-        'strongly_accept*'+mod: [],
-        'strongly_accept_derivative*'+mod: [],
-        'strongly_accept_dispersion*'+mod: [],
-        'weakly_accept*'+mod: [],
-        'weakly_accept_derivative*'+mod: [],
-        'weakly_accept_dispersion*'+mod: [],
+        'response*gain': [],
+        'response_derivative*gain': [],
+        'response_dispersion*gain': [],
+        'response*loss': [],
+        'response_derivative*loss': [],
+        'response_dispersion*loss': [],
+        'response*response': [],
+        'response_derivative*response': [],
+        'response_dispersion*response': [],
         }
 
     print('Designing contrasts')
@@ -249,18 +293,15 @@ def run_first_level(sub='sub-001', mod='gain'):
         contrast_matrix = np.eye(dm.shape[1])
         basic_contrasts = dict([(column, contrast_matrix[i])
                                 for i, column in enumerate(dm.columns)])
-        contrasts['strongly_reject*'+mod].append(basic_contrasts['strongly_reject*'+mod])
-        contrasts['strongly_reject_derivative*'+mod].append(basic_contrasts['strongly_reject_derivative*'+mod])
-        contrasts['strongly_reject_dispersion*'+mod].append(basic_contrasts['strongly_reject_dispersion*'+mod])
-        contrasts['weakly_reject*'+mod].append(basic_contrasts['weakly_reject*'+mod])
-        contrasts['weakly_reject_derivative*'+mod].append(basic_contrasts['weakly_reject_derivative*'+mod])
-        contrasts['weakly_reject_dispersion*'+mod].append(basic_contrasts['weakly_reject_dispersion*'+mod])
-        contrasts['strongly_accept*'+mod].append(basic_contrasts['strongly_accept*'+mod])
-        contrasts['strongly_accept_derivative*'+mod].append(basic_contrasts['strongly_accept_derivative*'+mod])
-        contrasts['strongly_accept_dispersion*'+mod].append(basic_contrasts['strongly_accept_dispersion*'+mod])
-        contrasts['weakly_accept*'+mod].append(basic_contrasts['weakly_accept*'+mod])
-        contrasts['weakly_accept_derivative*'+mod].append(basic_contrasts['weakly_accept_derivative*'+mod])
-        contrasts['weakly_accept_dispersion*'+mod].append(basic_contrasts['weakly_accept_dispersion*'+mod])
+        contrasts['response*gain'].append(basic_contrasts['response*gain'])
+        contrasts['response_derivative*gain'].append(basic_contrasts['response_derivative*gain'])
+        contrasts['response_dispersion*gain'].append(basic_contrasts['response_dispersion*gain'])
+        contrasts['response*loss'].append(basic_contrasts['response*loss'])
+        contrasts['response_derivative*loss'].append(basic_contrasts['response_derivative*loss'])
+        contrasts['response_dispersion*loss'].append(basic_contrasts['response_dispersion*loss'])
+        contrasts['response*response'].append(basic_contrasts['response*response'])
+        contrasts['response_derivative*response'].append(basic_contrasts['response_derivative*response'])
+        contrasts['response_dispersion*response'].append(basic_contrasts['response_dispersion*response'])
 
     print('Fitting a GLM')
     fmri_glm = FirstLevelModel(t_r=tr, slice_time_ref=slice_time_ref,
@@ -280,45 +321,28 @@ def run_first_level(sub='sub-001', mod='gain'):
             contrast_val, output_type='effect_size')
 
     print('Combining contrasts into magnitude images')
-    strongly_accept_mag = calhoun_correction(
-        beta_maps['strongly_accept*'+mod],
-        beta_maps['strongly_accept_derivative*'+mod],
-        beta_maps['strongly_accept_dispersion*'+mod])
-    weakly_accept_mag = calhoun_correction(
-        beta_maps['weakly_accept*'+mod],
-        beta_maps['weakly_accept_derivative*'+mod],
-        beta_maps['weakly_accept_dispersion*'+mod])
-    weakly_reject_mag = calhoun_correction(
-        beta_maps['weakly_reject*'+mod],
-        beta_maps['weakly_reject_derivative*'+mod],
-        beta_maps['weakly_reject_dispersion*'+mod])
-    strongly_reject_mag = calhoun_correction(
-        beta_maps['strongly_reject*'+mod],
-        beta_maps['strongly_reject_derivative*'+mod],
-        beta_maps['strongly_reject_dispersion*'+mod])
+    gain_mag = calhoun_correction(
+        beta_maps['response*gain'],
+        beta_maps['response_derivative*gain'],
+        beta_maps['response_dispersion*gain'])
+    loss_mag = calhoun_correction(
+        beta_maps['response*loss'],
+        beta_maps['response_derivative*loss'],
+        beta_maps['response_dispersion*loss'])
 
-    print('Averaging across participant responses')
-    prop_df = count_df['participant_response'][
-        ['strongly_accept', 'weakly_accept', 'strongly_reject', 'weakly_reject']
-    ]
-    prop_df /= prop_df.sum()
-    props = prop_df[['strongly_accept', 'weakly_accept',
-                     'weakly_reject', 'strongly_reject']].values
-    imgs = [strongly_accept_mag, weakly_accept_mag,
-            weakly_reject_mag, strongly_reject_mag]
-    data = [img.get_data() for img in imgs]
-
-    data_avg = np.average(np.stack(data, -1), axis=3, weights=props)
-    aff = strongly_accept_mag.affine  # same for all
-    img_avg = nib.Nifti1Image(data_avg, aff)
-    img_avg.to_filename(out_file)
+    gain_mag.to_filename(out_gain_file)
+    loss_mag.to_filename(out_loss_file)
 
 
 if __name__ == '__main__':
+    """
+    Run from command line so we can submit a separate job
+    for each subject
+    """
     sub = sys.argv[1]
     if sub in get_subjects():
-        smooth_files(sub)
-        run_first_level(sub, mod='gain')
-        run_first_level(sub, mod='loss')
+        print('Running {0}'.format(sub))
+        # smooth_files(sub)
+        run_first_level(sub)
     else:
         raise ValueError('{0} not found in get_subjects'.format(sub))
