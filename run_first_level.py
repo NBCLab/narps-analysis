@@ -33,8 +33,6 @@ def get_subjects():
     fp_dir = op.join(in_dir, 'derivatives/fmriprep/')
     subjects = sorted([op.basename(op.splitext(f)[0]) for f in
                        glob(op.join(in_dir, 'derivatives/fmriprep/*.html'))])
-    # sub = subjects[2]  # missing some conditions
-    sub = subjects[1]
     return subjects
 
 
@@ -326,3 +324,15 @@ def run_first_level(sub='sub-001', mod='gain'):
     aff = strongly_accept_mag.affine  # same for all
     img_avg = nib.Nifti1Image(data_avg, aff)
     img_avg.to_filename(out_file)
+
+
+def run_first_levels():
+    subjects = get_subjects()
+    for sub in subjects[:1]:
+        smooth_files(sub)
+        run_first_level(sub, mod='gain')
+        run_first_level(sub, mod='loss')
+
+
+if __name__ == '__main__':
+    run_first_levels()
