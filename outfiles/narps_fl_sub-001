@@ -1,37 +1,42 @@
 Running sub-001
 Generating design matrices
-['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'no_response', 'no_response_derivative', 'no_response_dispersion', 'censor_0', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
+['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'no_response', 'no_response_derivative', 'no_response_dispersion', 'motion_RotX', 'motion_RotY', 'motion_RotZ', 'motion_X', 'motion_Y', 'motion_Z', 'censor_0', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
 Index(['no_response', 'no_response_derivative', 'no_response_dispersion',
        'response', 'response_derivative', 'response_dispersion',
        'response*gain', 'response_derivative*gain', 'response_dispersion*gain',
        'response*loss', 'response_derivative*loss', 'response_dispersion*loss',
        'response*response', 'response_derivative*response',
-       'response_dispersion*response', 'drift_1', 'drift_2', 'drift_3',
-       'drift_4', 'drift_5', 'drift_6', 'constant', 'censor_0'],
+       'response_dispersion*response', 'motion_X', 'motion_Y', 'motion_Z',
+       'motion_RotX', 'motion_RotY', 'motion_RotZ', 'drift_1', 'drift_2',
+       'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant', 'censor_0'],
       dtype='object')
-['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'censor_0', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
+['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'motion_RotX', 'motion_RotY', 'motion_RotZ', 'motion_X', 'motion_Y', 'motion_Z', 'censor_0', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
 Index(['response', 'response_derivative', 'response_dispersion',
        'response*gain', 'response_derivative*gain', 'response_dispersion*gain',
        'response*loss', 'response_derivative*loss', 'response_dispersion*loss',
        'response*response', 'response_derivative*response',
-       'response_dispersion*response', 'drift_1', 'drift_2', 'drift_3',
-       'drift_4', 'drift_5', 'drift_6', 'constant', 'censor_0'],
+       'response_dispersion*response', 'motion_X', 'motion_Y', 'motion_Z',
+       'motion_RotX', 'motion_RotY', 'motion_RotZ', 'drift_1', 'drift_2',
+       'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant', 'censor_0'],
       dtype='object')
-['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
+['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'motion_RotX', 'motion_RotY', 'motion_RotZ', 'motion_X', 'motion_Y', 'motion_Z', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
 Index(['response', 'response_derivative', 'response_dispersion',
        'response*gain', 'response_derivative*gain', 'response_dispersion*gain',
        'response*loss', 'response_derivative*loss', 'response_dispersion*loss',
        'response*response', 'response_derivative*response',
-       'response_dispersion*response', 'drift_1', 'drift_2', 'drift_3',
-       'drift_4', 'drift_5', 'drift_6', 'constant'],
+       'response_dispersion*response', 'motion_X', 'motion_Y', 'motion_Z',
+       'motion_RotX', 'motion_RotY', 'motion_RotZ', 'drift_1', 'drift_2',
+       'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant'],
       dtype='object')
-['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'censor_0', 'censor_1', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
+['response', 'response*gain', 'response*loss', 'response*response', 'response_derivative', 'response_derivative*gain', 'response_derivative*loss', 'response_derivative*response', 'response_dispersion', 'response_dispersion*gain', 'response_dispersion*loss', 'response_dispersion*response', 'motion_RotX', 'motion_RotY', 'motion_RotZ', 'motion_X', 'motion_Y', 'motion_Z', 'censor_0', 'censor_1', 'drift_1', 'drift_2', 'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant']
 Index(['response', 'response_derivative', 'response_dispersion',
        'response*gain', 'response_derivative*gain', 'response_dispersion*gain',
        'response*loss', 'response_derivative*loss', 'response_dispersion*loss',
        'response*response', 'response_derivative*response',
-       'response_dispersion*response', 'drift_1', 'drift_2', 'drift_3',
-       'drift_4', 'drift_5', 'drift_6', 'constant', 'censor_0', 'censor_1'],
+       'response_dispersion*response', 'motion_X', 'motion_Y', 'motion_Z',
+       'motion_RotX', 'motion_RotY', 'motion_RotZ', 'drift_1', 'drift_2',
+       'drift_3', 'drift_4', 'drift_5', 'drift_6', 'constant', 'censor_0',
+       'censor_1'],
       dtype='object')
 Designing contrasts
 Fitting a GLM
@@ -49,14 +54,14 @@ Combining contrasts into magnitude images
 
 ------------------------------------------------------------
 Sender: LSF System <lsfadmin@n085>
-Subject: Job 980628: <sub-001> Done
+Subject: Job 980656: <sub-001> Done
 
 Job <sub-001> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
 Job was executed on host(s) <n085>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Fri Feb  8 18:04:59 2019
-Results reported at Fri Feb  8 18:08:03 2019
+Started at Sat Feb  9 11:32:33 2019
+Results reported at Sat Feb  9 11:35:38 2019
 
 Your job looked like:
 
@@ -101,9 +106,9 @@ Successfully completed.
 
 Resource usage summary:
 
-    CPU time   :    163.88 sec.
-    Max Memory :     10694 MB
-    Max Swap   :     11796 MB
+    CPU time   :    168.18 sec.
+    Max Memory :     10454 MB
+    Max Swap   :     12160 MB
 
     Max Processes  :         5
     Max Threads    :         6

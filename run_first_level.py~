@@ -351,7 +351,7 @@ if __name__ == '__main__':
     sub = sys.argv[1]
     if sub in get_subjects():
         print('Running {0}'.format(sub))
-        smooth_files(sub)
+        # smooth_files(sub)
         run_first_level(sub)
     else:
         raise ValueError('{0} not found in get_subjects'.format(sub))
