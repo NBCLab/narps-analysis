@@ -1,0 +1,32 @@
+#!/bin/bash
+#---Number of cores
+#BSUB -n 1
+#BSUB -R "span[ptile=1]"
+
+#---Job's name in LSF system
+#BSUB -J sub-102
+
+#---Error file
+#BSUB -eo /home/data/nbc/Laird_NARPS/code/errorfiles/narps_fl_sub-102
+
+#---Output file
+#BSUB -oo /home/data/nbc/Laird_NARPS/code/outfiles/narps_fl_sub-102
+
+#---LSF Queue name
+#BSUB -q PQ_nbc
+
+##########################################################
+# Set up environmental variables.
+##########################################################
+export NPROCS=`echo $LSB_HOSTS | wc -w`
+export OMP_NUM_THREADS=$NPROCS
+
+. $MODULESHOME/../global/profile.modules
+
+##########################################################
+##########################################################
+# Load Python 3 environment
+source /home/data/nbc/data-analysis/py3_environment
+
+# Run model
+python run_first_level.py sub-102

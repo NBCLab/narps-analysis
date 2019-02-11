@@ -38,67 +38,24 @@ def smooth_files(sub='sub-001'):
 
     in_dir = '/scratch/kbott/narps/'
     fp_dir = op.join(in_dir, 'derivatives/fmriprep/')
-    ev_dir = op.join(in_dir, 'event_tsvs')
     out_dir = op.join(in_dir, 'derivatives/fmriprep-smoothing/')
     sub_out_dir = op.join(out_dir, sub, 'func')
     os.makedirs(sub_out_dir, exist_ok=True)
 
-    sub_anat_dir = op.join(fp_dir, sub, 'anat')
     sub_func_dir = op.join(fp_dir, sub, 'func')
     func_files = sorted(glob(op.join(
         sub_func_dir, '*_task-MGT_*space-MNI152NLin2009cAsym_preproc.nii.gz')))
-    brainmask = sorted(glob(op.join(
-        sub_func_dir, '*_task-MGT_*space-MNI152NLin2009cAsym_brainmask.nii.gz')))[0]
-
-    print('Resampling tissue probability maps to functional resolution')
-    gm_file = sorted(glob(op.join(
-        sub_anat_dir, '*_space-MNI152NLin2009cAsym_class-GM_probtissue.nii.gz')))[0]
-    gm_img = resample_to_img(gm_file, func_files[0], 'linear')  # same res for all funcs
-    gm_prob = gm_img.get_data()
-    gm_mask = (gm_prob > 0.5).astype(int)
-    gm_img = nib.Nifti1Image(gm_mask, gm_img.affine)
-
-    wm_file = sorted(glob(op.join(
-        sub_anat_dir, '*_space-MNI152NLin2009cAsym_class-WM_probtissue.nii.gz')))[0]
-    wm_img = resample_to_img(wm_file, func_files[0], 'linear')  # same res for all funcs
-    wm_prob = wm_img.get_data()
-    wm_mask = (wm_prob > 0.5).astype(int)
-    wm_img = nib.Nifti1Image(wm_mask, wm_img.affine)
-
-    bm_img = nib.load(brainmask)
-    bm_mask = bm_img.get_data()
-    ob_mask = 1 - bm_mask  # reverse (1 = outside brain, 0 = inside brain)
-    ob_img = nib.Nifti1Image(ob_mask, bm_img.affine)
 
     print('Computing brightness threshold for smoothing')
     for func_file in func_files:
         run = get_run(func_file)
-        gm_data = apply_mask(func_file, gm_img)
-        mean_gm = np.mean(gm_data)
 
-        wm_data = apply_mask(func_file, wm_img)
-        mean_wm = np.mean(wm_data)
-
-        mean_contrast = mean_gm - mean_wm
-
-        ob_data = apply_mask(func_file, ob_img)
-        mean_noise = np.mean(ob_data)
-
-        # Brightness threshold halfway between contrast and noise
-        brightness_threshold = np.mean((mean_contrast, mean_noise))
-        
-        # Disable SUSAN for test
+        # Run normal smoothing
         print('Smoothing data')
         smoothed_file = op.join(sub_out_dir,
                                 '{0}_task-MGT_{1}_space-MNI152NLin2009cAsym_'
                                 'desc-smoothed_bold.nii.gz'.format(sub, run))
-        # if not op.isfile(smoothed_file):
-        #     sus = fsl.SUSAN()
-        #     sus.inputs.in_file = func_file
-        #     sus.inputs.brightness_threshold = brightness_threshold
-        #     sus.inputs.fwhm = fwhm
-        #     sus.inputs.out_file = smoothed_file
-        #     sus.run()
+
         func_img = nib.load(func_file)
         smoothed_img = smooth_img(func_img, fwhm)
         smoothed_img.to_filename(smoothed_file)
@@ -122,10 +79,11 @@ def run_first_level(sub='sub-001'):
 
     # Folders and files
     in_dir = '/scratch/kbott/narps/'
+    nbc_dir = '/home/data/nbc/Laird_NARPS'
     fp_dir = op.join(in_dir, 'derivatives/fmriprep/')
     sm_dir = op.join(in_dir, 'derivatives/fmriprep-smoothing/')
     ev_dir = op.join(in_dir, 'event_tsvs')
-    out_dir = op.join(in_dir, 'derivatives/first-levels')
+    out_dir = op.join(nbc_dir, 'derivatives/first-levels')
     sub_out_dir = op.join(out_dir, sub)
     os.makedirs(sub_out_dir, exist_ok=True)
 

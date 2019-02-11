@@ -1,0 +1,90 @@
+Running sub-027
+Computing brightness threshold for smoothing
+Smoothing data
+Smoothing data
+Smoothing data
+Smoothing data
+Generating design matrices
+Designing contrasts
+Fitting a GLM
+Computing contrasts
+	contrast id: response*gain
+	contrast id: response_derivative*gain
+	contrast id: response_dispersion*gain
+	contrast id: response*loss
+	contrast id: response_derivative*loss
+	contrast id: response_dispersion*loss
+	contrast id: response*response
+	contrast id: response_derivative*response
+	contrast id: response_dispersion*response
+Combining contrasts into magnitude images
+
+------------------------------------------------------------
+Sender: LSF System <lsfadmin@n002>
+Subject: Job 981540: <sub-027> Done
+
+Job <sub-027> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <n002>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+</home/tsalo006> was used as the home directory.
+</home/data/nbc/Laird_NARPS/code> was used as the working directory.
+Started at Mon Feb 11 11:50:54 2019
+Results reported at Mon Feb 11 12:16:30 2019
+
+Your job looked like:
+
+------------------------------------------------------------
+# LSBATCH: User input
+#!/bin/bash
+#---Number of cores
+#BSUB -n 1
+#BSUB -R "span[ptile=1]"
+
+#---Job's name in LSF system
+#BSUB -J sub-027
+
+#---Error file
+#BSUB -eo /home/data/nbc/Laird_NARPS/code/errorfiles/narps_fl_sub-027
+
+#---Output file
+#BSUB -oo /home/data/nbc/Laird_NARPS/code/outfiles/narps_fl_sub-027
+
+#---LSF Queue name
+#BSUB -q PQ_nbc
+
+##########################################################
+# Set up environmental variables.
+##########################################################
+export NPROCS=`echo $LSB_HOSTS | wc -w`
+export OMP_NUM_THREADS=$NPROCS
+
+. $MODULESHOME/../global/profile.modules
+
+##########################################################
+##########################################################
+# Load Python 3 environment
+source /home/data/nbc/data-analysis/py3_environment
+
+# Run model
+python run_first_level.py sub-027
+
+------------------------------------------------------------
+
+Successfully completed.
+
+Resource usage summary:
+
+    CPU time   :   1482.41 sec.
+    Max Memory :     10378 MB
+    Max Swap   :     12188 MB
+
+    Max Processes  :         5
+    Max Threads    :         6
+
+The output (if any) is above this job summary.
+
+
+
+PS:
+
+Read file </home/data/nbc/Laird_NARPS/code/errorfiles/narps_fl_sub-027> for stderr output of this job.
+
