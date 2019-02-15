@@ -12,6 +12,8 @@ import os
 import os.path as op
 import sys
 from glob import glob
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
 import pandas as pd
@@ -27,7 +29,7 @@ out_gain_dir = op.join(dat_dir, 'group-level-gain')
 out_loss_dir = op.join(dat_dir, 'group-level-loss')
 out_diff_dir = op.join(dat_dir, 'group-level-diff')
 gain_4d_betas = op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_4d_betas.nii.gz')
-loss_4d_betas = op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_4d_betas.nii.gz')
+loss_4d_betas = op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_4d_betas.nii.gz')
 dm_file = op.join(tf_dir, 'event_tsvs', 'participants.tsv')
 
 loss_mat = op.join(out_loss_dir, 'design.mat')
@@ -50,7 +52,6 @@ ppt_dummy.drop('group', axis=1, inplace=True)
 gain_betas = []
 loss_betas = []
 for sub in ppts.index.values:
-    print(sub)
     try:
         sub_fl_dir = op.join(dat_dir, 'first-levels', sub)
         gain_name = '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-gain_betas.nii.gz'.format(sub)
@@ -62,7 +63,7 @@ for sub in ppts.index.values:
         loss_betas.append(loss_file)
 
         #And while we're iterating over subjects, calculate avg FramewiseDisplacement
-        sub_fp_dir = op.join(tf_dir, 'fmriprep', sub, 'func')
+        sub_fp_dir = op.join(tf_dir, 'derivatives/fmriprep', sub, 'func')
         sub_fd = 0
         for run in ['01', '02', '03', '04']:
             cf_file = op.join(sub_fp_dir, '{0}_task-MGT_run-{1}_bold_confounds.tsv'.format(sub, run))
@@ -80,7 +81,6 @@ groups = ['equalRange', 'equalIndifference']
 
 # Mean center the confounding variables...
 for confound in confounds:
-    print(confound)
     mean = np.mean(ppt_dummy[confound])
     ppt_dummy['{0}_mc'.format(confound)] = ppt_dummy[confound] - mean
     ppt_dummy.drop(confound, axis=1, inplace=True)
@@ -93,32 +93,37 @@ dmat.to_csv(op.join(out_loss_dir, 'design_matrix.txt'), sep='\t')
 dmat.to_csv(op.join(out_gain_dir, 'design_matrix.txt'), sep='\t')
 
 fig,ax = plt.subplots(figsize=(10, 7))
-plot_design_matrix(dmat, ax=ax)
+g = plot_design_matrix(dmat, ax=ax)
 ax.set_title('Second level design matrix', fontsize=12)
 ax.set_ylabel('maps')
 plt.tight_layout()
 fig.savefig(op.join(out_gain_dir, 'design_matrix.png'), dpi=300)
 fig.savefig(op.join(out_loss_dir, 'design_matrix.png'), dpi=300)
 
+
 for mat in [gain_mat, loss_mat]:
+    covariates = []
     dmat_file = open(mat, "w+")
     dmat_file.write('/NumWaves\t{0}\n/NumPoints\t{1}\n'.format(len(list(dmat.keys())), len(dmat.index)))
-    dmat_file.write('/PPheights\t\t1.000000e+00\t1.000000e+00\t0.000000e+00\t0.000000e+00\t0.000000e+00\n')
+    dmat_file.write('/PPheights\t\t1.000000e+00\t1.000000e+00\t0.000000e+00\t0.000000e+00\t0.000000e+00\t0.000000e+00\n')
     dmat_file.write('\n/Matrix\n')
-    dmat_file.writelines('{0}\t{1}\t{2}\t{3}\t{4}\n'.format(dmat.iloc[i, 0],
-                                                          dmat.iloc[i, 1],
-                                                          dmat.iloc[i, 2],
-                                                          dmat.iloc[i, 3],
-                                                          dmat.iloc[i, 4]) for i in dmat.index)
+    for i in dmat.index:
+        dmat_file.writelines('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n'.format(dmat.iloc[i, 0],
+                                                              dmat.iloc[i, 1],
+                                                              dmat.iloc[i, 2],
+                                                              dmat.iloc[i, 3],
+                                                              dmat.iloc[i, 4],
+                                                              dmat.iloc[i, 5]))
+        covariates.append(dmat.iloc[i] for i in dmat.index)
     dmat_file.close()
 
 # And an fsl-compatible contrast file!
-gain_cons = {'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 '}
-loss_cons = {'equalRange > equalIndifference': '1.000000e+00 -1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalIndifference > equalRange': '-1.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 '}
+gain_cons = {'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
+             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00'}
+loss_cons = {'equalRange > equalIndifference': '1.000000e+00 -1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
+             'equalIndifference > equalRange': '-1.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+000.000000e+00 ',
+             'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
+             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00'}
 print('making contrasts!')
 con_file = open(gain_con, "w+")
 for i in np.arange(0, len(gain_cons.keys())):
@@ -151,10 +156,20 @@ con_file.close()
 print('merging betas!')
 # Convert a list of filenames into a 4D betas Nifti
 merger = Merge(dimension='t', output_type='NIFTI_GZ')
-gains = merger.run(input=gain_betas, merged_file=gain_4d_betas)
-losses = merger.run(input=loss_betas, merged_file=loss_4d_betas)
+gains = merger.run(in_files=gain_betas, merged_file=gain_4d_betas)
+losses = merger.run(in_files=loss_betas, merged_file=loss_4d_betas)
+
+# Perform sanity check: do design matrices match length of 4d betas?
+print('loss betas: {0}\ngain betas: {1}\ndmat subjects: {2}\n.mat length: {3}'.format(len(loss_betas), len(gain_betas), len(dmat.index), len(covariates)))
+assert len(gain_betas) == len(dmat.index), 'number of gain beta maps does not equal number of subjects in nistats design matrix'
+assert len(loss_betas) == len(dmat.index), 'number of loss beta maps does not equal number of subjects in nistats design matrix'
+assert len(gain_betas) == len(covariates), 'number of gain beta maps does not equal number of subjects in design.mat'
+assert len(loss_betas) == len(covariates), 'number of loss beta maps does not equal number of subjects in design.mat'
 
 # Run the models, nonparametrically, using Randomise
 random = Randomise()
-#random.run(in_file=gain_4d_betas, tcon=gain_con, design_mat=gain_mat, n_perm=10000, tfce=True, basename=op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_randomise'))
-#random.run(in_file=loss_4d_betas, tcon=loss_con, design_mat=loss_mat, n_perm=10000, tfce=True, basename=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_randomise'))
+print('about to randomise!')
+random.run(in_file=gain_4d_betas, tcon=gain_con, design_mat=gain_mat, num_perm=10000, tfce=True, base_name=op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_randomise'))
+print('gains done!')
+random.run(in_file=loss_4d_betas, tcon=loss_con, design_mat=loss_mat, num_perm=10000, tfce=True, base_name=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_randomise'))
+print('losses done!')
