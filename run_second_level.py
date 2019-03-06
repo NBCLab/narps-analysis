@@ -18,6 +18,7 @@ import matplotlib.pyplot as plt
 
 import pandas as pd
 import numpy as np
+from datetime import datetime
 from nipype.interfaces.fsl import Merge, Randomise
 from nistats.reporting import plot_design_matrix
 from nistats.design_matrix import make_second_level_design_matrix
@@ -79,11 +80,13 @@ for sub in ppts.index.values:
 confounds = ['fd', 'gender', 'age']
 groups = ['equalRange', 'equalIndifference']
 
+ppt_dummy = ppt_dummy[['equalRange', 'equalIndifference', 'fd', 'gender', 'age']]
+
 # Mean center the confounding variables...
-for confound in confounds:
-    mean = np.mean(ppt_dummy[confound])
-    ppt_dummy['{0}_mc'.format(confound)] = ppt_dummy[confound] - mean
-    ppt_dummy.drop(confound, axis=1, inplace=True)
+#for confound in confounds:
+#    mean = np.mean(ppt_dummy[confound])
+#    ppt_dummy['{0}_mc'.format(confound)] = ppt_dummy[confound] - mean
+#    ppt_dummy.drop(confound, axis=1, inplace=True)
 
 ppt_dummy['subject_label'] = ppt_dummy.index
 
@@ -104,31 +107,30 @@ fig.savefig(op.join(out_loss_dir, 'design_matrix.png'), dpi=300)
 for mat in [gain_mat, loss_mat]:
     covariates = []
     dmat_file = open(mat, "w+")
-    dmat_file.write('/NumWaves\t{0}\n/NumPoints\t{1}\n'.format(len(list(dmat.keys())), len(dmat.index)))
-    dmat_file.write('/PPheights\t\t1.000000e+00\t1.000000e+00\t0.000000e+00\t0.000000e+00\t0.000000e+00\t0.000000e+00\n')
+    dmat_file.write('/NumWaves\t{0}\n/NumPoints\t{1}\n'.format(len(dmat.keys())-1, len(dmat.index)))
+    dmat_file.write('/PPheights\t\t1.000000e+00\t1.000000e+00\t0.000000e+00\t0.000000e+00\t0.000000e+00\n')
     dmat_file.write('\n/Matrix\n')
     for i in dmat.index:
-        dmat_file.writelines('{0}\t{1}\t{2}\t{3}\t{4}\t{5}\n'.format(dmat.iloc[i, 0],
+        dmat_file.writelines('{0}\t{1}\t{2}\t{3}\t{4}\n'.format(dmat.iloc[i, 0],
                                                               dmat.iloc[i, 1],
                                                               dmat.iloc[i, 2],
                                                               dmat.iloc[i, 3],
-                                                              dmat.iloc[i, 4],
-                                                              dmat.iloc[i, 5]))
+                                                              dmat.iloc[i, 4]))
         covariates.append(dmat.iloc[i] for i in dmat.index)
     dmat_file.close()
 
 # And an fsl-compatible contrast file!
-gain_cons = {'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00'}
-loss_cons = {'equalRange > equalIndifference': '1.000000e+00 -1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalIndifference > equalRange': '-1.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+000.000000e+00 ',
-             'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
-             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00'}
+gain_cons = {'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
+             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00'}
+loss_cons = {'equalRange > equalIndifference': '1.000000e+00 -1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
+             'equalIndifference > equalRange': '-1.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00',
+             'equalRange mean': '1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 ',
+             'equalIndifference mean': '0.000000e+00 1.000000e+00 0.000000e+00 0.000000e+00 0.000000e+00 '}
 print('making contrasts!')
 con_file = open(gain_con, "w+")
 for i in np.arange(0, len(gain_cons.keys())):
     con_file.write('/ContrastName{0}\t{1}\n'.format(i, list(gain_cons.keys())[i]))
-con_file.write('/NumWaves\t{0}\n'.format(len(dmat.keys())))
+con_file.write('/NumWaves\t{0}\n'.format(len(dmat.keys())-1))
 con_file.write('/NumContrasts\t{0}\n'.format(len(gain_cons.keys())))
 con_file.write('/PPheights\t')
 for i in np.arange(0, len(gain_cons.keys())):
@@ -142,7 +144,7 @@ con_file.close()
 con_file = open(loss_con, "w+")
 for i in np.arange(0, len(loss_cons.keys())):
     con_file.write('/ContrastName{0}\t{1}\n'.format(i, list(loss_cons.keys())[i]))
-con_file.write('/NumWaves\t{0}\n'.format(len(dmat.keys())))
+con_file.write('/NumWaves\t{0}\n'.format(len(dmat.keys())-1))
 con_file.write('/NumContrasts\t{0}\n'.format(len(loss_cons.keys())))
 con_file.write('/PPheights\t')
 for i in np.arange(0, len(loss_cons.keys())):
@@ -167,9 +169,13 @@ assert len(gain_betas) == len(covariates), 'number of gain beta maps does not eq
 assert len(loss_betas) == len(covariates), 'number of loss beta maps does not equal number of subjects in design.mat'
 
 # Run the models, nonparametrically, using Randomise
-random = Randomise()
-print('about to randomise!')
-random.run(in_file=gain_4d_betas, tcon=gain_con, design_mat=gain_mat, num_perm=10000, tfce=True, base_name=op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_randomise'))
-print('gains done!')
-random.run(in_file=loss_4d_betas, tcon=loss_con, design_mat=loss_mat, num_perm=10000, tfce=True, base_name=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_randomise'))
-print('losses done!')
+random = Randomise(num_perm=10000, cm_thresh=2.3, demean=True)
+pre_rand = datetime.now()
+print('{0}: about to randomise!'.format(pre_rand))
+random.run(in_file=loss_4d_betas, tcon=loss_con, design_mat=loss_mat, base_name=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_randomise'))
+loss_time = datetime.now() - pre_rand
+pre_rand = datetime.now()
+print('{0}: losses done! took {1} s.'.format(pre_rand, loss_time))
+random.run(in_file=gain_4d_betas, tcon=gain_con, design_mat=gain_mat, base_name=op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_randomise'))
+gain_time = datetime.now() - pre_rand
+print('{0}: losses done! took {1} s.'.format(datetime.now(), gain_time))
