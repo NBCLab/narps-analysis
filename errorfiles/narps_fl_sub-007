@@ -1,8 +1,10 @@
+/home/data/nbc/data-analysis/env3/bin/activate: line 59: /home/data/nbc/data-analysis/env3/bin/deactivate: No such file or directory
+/home/applications/miniconda2.7/4.2.12/miniconda2/bin/python: can't open file '/home/data/nbc/data-analysis/env3/bin/conda': [Errno 2] No such file or directory
 /home/data/nbc/data-analysis/env3/lib/python3.6/importlib/_bootstrap.py:205: ImportWarning: can't resolve package from __spec__ or __package__, falling back on __name__ and __path__
   return f(*args, **kwds)
 Traceback (most recent call last):
-  File "run_first_level.py", line 313, in <module>
-    run_first_level(sub)
-  File "run_first_level.py", line 101, in run_first_level
+  File "run_first_level.py", line 249, in <module>
+    run_first_level(sub, 'gain')
+  File "run_first_level.py", line 65, in run_first_level
     sub_func_dir, '*_task-MGT_*space-MNI152NLin2009cAsym_brainmask.nii.gz')))[0]
 IndexError: list index out of range

@@ -1,16 +1,15 @@
 Running sub-031
-Computing brightness threshold for smoothing
 
 ------------------------------------------------------------
-Sender: LSF System <lsfadmin@n003>
-Subject: Job 981759: <sub-031> Exited
+Sender: LSF System <lsfadmin@n008>
+Subject: Job 7136: <sub-031> Exited
 
 Job <sub-031> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
-Job was executed on host(s) <4*n003>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <4*n008>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Mon Feb 11 13:17:08 2019
-Results reported at Mon Feb 11 13:17:43 2019
+Started at Wed Mar  6 15:04:22 2019
+Results reported at Wed Mar  6 15:04:38 2019
 
 Your job looked like:
 
@@ -55,8 +54,8 @@ Exited with exit code 1.
 
 Resource usage summary:
 
-    CPU time   :      8.33 sec.
-    Max Memory :         2 MB
+    CPU time   :      7.22 sec.
+    Max Memory :         1 MB
     Max Swap   :        46 MB
 
     Max Processes  :         1

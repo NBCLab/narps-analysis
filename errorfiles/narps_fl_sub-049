@@ -1,11 +1,52 @@
-/home/data/nbc/data-analysis/env3/lib/python3.6/importlib/_bootstrap.py:205: ImportWarning: can't resolve package from __spec__ or __package__, falling back on __name__ and __path__
-  return f(*args, **kwds)
-/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/experimental_paradigm.py:63: UserWarning: 'modulation' column found in the given events data.
-  warnings.warn("'modulation' column found in the given events data.")
-/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/hemodynamic_models.py:268: DeprecationWarning: object of type <class 'numpy.float64'> cannot be safely interpreted as an integer.
-  frame_times.max() * (1 + 1. / (n - 1)), n_hr)
-/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/hemodynamic_models.py:55: DeprecationWarning: object of type <class 'float'> cannot be safely interpreted as an integer.
-  time_stamps = np.linspace(0, time_length, float(time_length) / dt)
-/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nilearn-0.5.0-py3.6.egg/nilearn/_utils/cache_mixin.py:232: DeprecationWarning: The 'cachedir' attribute has been deprecated in version 0.12 and will be removed in version 0.14.
-Use os.path.join(memory.location, 'joblib') attribute instead.
-  if (memory.cachedir is None and memory_level is not None
+An unexpected error has occurred.
+Please consider posting the following information to the
+conda GitHub issue tracker at:
+
+    https://github.com/conda/conda/issues
+
+
+
+Current conda install:
+
+               platform : linux-64
+          conda version : 4.2.12
+       conda is private : False
+      conda-env version : 4.2.12
+    conda-build version : not installed
+         python version : 2.7.12.final.0
+       requests version : 2.11.1
+       root environment : /home/applications/miniconda2.7/4.2.12/miniconda2  (read only)
+    default environment : /home/data/nbc/data-analysis/env3
+       envs directories : /home/tsalo006/.conda/envs
+                          /home/applications/miniconda2.7/4.2.12/miniconda2/envs
+          package cache : /home/tsalo006/.conda/envs/.pkgs
+                          /home/applications/miniconda2.7/4.2.12/miniconda2/pkgs
+           channel URLs : https://conda.anaconda.org/brian-team/linux-64
+                          https://conda.anaconda.org/brian-team/noarch
+                          https://repo.continuum.io/pkgs/free/linux-64
+                          https://repo.continuum.io/pkgs/free/noarch
+                          https://repo.continuum.io/pkgs/pro/linux-64
+                          https://repo.continuum.io/pkgs/pro/noarch
+            config file : /home/tsalo006/.condarc
+           offline mode : False
+
+
+
+`$ /home/data/nbc/data-analysis/env3/bin/conda ..checkenv bash /home/data/nbc/data-analysis/env3`
+
+
+
+
+    Traceback (most recent call last):
+      File "/home/applications/miniconda2.7/4.2.12/miniconda2/lib/python2.7/site-packages/conda/exceptions.py", line 479, in conda_exception_handler
+        return_value = func(*args, **kwargs)
+      File "/home/applications/miniconda2.7/4.2.12/miniconda2/lib/python2.7/site-packages/conda/cli/main.py", line 94, in _main
+        activate.main()
+      File "/home/applications/miniconda2.7/4.2.12/miniconda2/lib/python2.7/site-packages/conda/cli/activate.py", line 148, in main
+        conda.install.symlink_conda(prefix, context.root_dir, shell)
+      File "/home/applications/miniconda2.7/4.2.12/miniconda2/lib/python2.7/site-packages/conda/install.py", line 536, in symlink_conda
+        symlink_conda_hlp(prefix, root_dir, where, symlink_fn)
+      File "/home/applications/miniconda2.7/4.2.12/miniconda2/lib/python2.7/site-packages/conda/install.py", line 553, in symlink_conda_hlp
+        symlink_fn(root_file, prefix_file)
+    OSError: [Errno 17] File exists
+

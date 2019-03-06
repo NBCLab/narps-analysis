@@ -91,6 +91,11 @@ def run_first_level(sub='sub-001', mod='gain'):
         cf_df = pd.read_csv(cf_files[i_run], sep='\t')
         mot_df = cf_df[['X', 'Y', 'Z', 'RotX', 'RotY', 'RotZ']]
         mot_df = mot_df.add_prefix('motion_')
+        temp_mot_df = mot_df.diff(axis=0)
+        temp_mot_df = temp_mot_df.add_suffix('_derivative')
+        temp_mot_df.loc[0] = 0
+        mot_df = pd.concat((mot_df, temp_mot_df), axis=1)
+        
         fd = cf_df['FramewiseDisplacement'].values
         fd[0] = 0.  # replace nan
         cens_vec = ec.censor(fd, fd_thresh, n_contig=0,
@@ -174,25 +179,25 @@ def run_first_level(sub='sub-001', mod='gain'):
         # Reorder DM
         # this list should be comprehensive
         sort_order = ['response', 'no_response', 'motion', 'censor', 'drift', 'constant']
-        columns = [[c for c in dm.columns if c.startswith(so)] for so in sort_order]
+        columns = [[c for c in dm_mod.columns if c.startswith(so)] for so in sort_order]
         columns = [sorted(cols) for cols in columns]
         columns = [v for sl in columns for v in sl]
-        assert Counter(dm.columns.tolist()) == Counter(columns)
-        dm = dm[columns]
+        assert Counter(dm_mod.columns.tolist()) == Counter(columns)
+        dm_mod = dm_mod[columns]
 
         # Save image of design matrix
         run_name = get_run(func_files[i_run])
         dm_name = '{0}_task-MGT_{1}_{2}_designMatrix.png'.format(sub, run_name, mod)
         dm_file = op.join(sub_out_dir, dm_name)
         fig, ax = plt.subplots(figsize=(20, 16))
-        plot_design_matrix(dm, ax=ax)
+        plot_design_matrix(dm_mod, ax=ax)
         fig.savefig(dm_file, dpi=400)
         dm_name = '{0}_task-MGT_{1}_{2}_designMatrix.tsv'.format(sub, run_name, mod)
         dm_file = op.join(sub_out_dir, dm_name)
-        dm.to_csv(dm_file, sep='\t', index=False)
+        dm_mod.to_csv(dm_file, sep='\t', index=False)
 
         # put the design matrices in a list
-        design_matrices.append(dm)
+        design_matrices.append(dm_mod)
 
     contrasts = {
         'response*{0}'.format(mod): [],

@@ -1,34 +1,14 @@
-Running sub-054
-Computing brightness threshold for smoothing
-Smoothing data
-Smoothing data
-Smoothing data
-Smoothing data
-Generating design matrices
-Designing contrasts
-Fitting a GLM
-Computing contrasts
-	contrast id: response*gain
-	contrast id: response_derivative*gain
-	contrast id: response_dispersion*gain
-	contrast id: response*loss
-	contrast id: response_derivative*loss
-	contrast id: response_dispersion*loss
-	contrast id: response*response
-	contrast id: response_derivative*response
-	contrast id: response_dispersion*response
-Combining contrasts into magnitude images
 
 ------------------------------------------------------------
-Sender: LSF System <lsfadmin@n003>
-Subject: Job 981719: <sub-054> Done
+Sender: LSF System <lsfadmin@n029>
+Subject: Job 7156: <sub-054> Exited
 
 Job <sub-054> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
-Job was executed on host(s) <4*n003>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <4*n029>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Mon Feb 11 12:50:14 2019
-Results reported at Mon Feb 11 13:14:50 2019
+Started at Wed Mar  6 15:04:22 2019
+Results reported at Wed Mar  6 15:04:29 2019
 
 Your job looked like:
 
@@ -69,16 +49,16 @@ python run_first_level.py sub-054
 
 ------------------------------------------------------------
 
-Successfully completed.
+Exited with exit code 1.
 
 Resource usage summary:
 
-    CPU time   :   1697.37 sec.
-    Max Memory :      9934 MB
-    Max Swap   :     12388 MB
+    CPU time   :      1.17 sec.
+    Max Memory :         2 MB
+    Max Swap   :       239 MB
 
-    Max Processes  :         5
-    Max Threads    :        12
+    Max Processes  :         4
+    Max Threads    :         5
 
 The output (if any) is above this job summary.
 
