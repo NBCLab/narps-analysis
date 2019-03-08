@@ -1,15 +1,15 @@
 Running sub-031
 
 ------------------------------------------------------------
-Sender: LSF System <lsfadmin@n008>
-Subject: Job 7136: <sub-031> Exited
+Sender: LSF System <lsfadmin@n085>
+Subject: Job 7545: <sub-031> Exited
 
 Job <sub-031> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
-Job was executed on host(s) <4*n008>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <4*n085>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Wed Mar  6 15:04:22 2019
-Results reported at Wed Mar  6 15:04:38 2019
+Started at Thu Mar  7 16:53:05 2019
+Results reported at Thu Mar  7 16:53:39 2019
 
 Your job looked like:
 
@@ -54,7 +54,7 @@ Exited with exit code 1.
 
 Resource usage summary:
 
-    CPU time   :      7.22 sec.
+    CPU time   :      4.46 sec.
     Max Memory :         1 MB
     Max Swap   :        46 MB
 

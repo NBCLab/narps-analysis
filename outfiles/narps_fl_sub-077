@@ -1,34 +1,55 @@
 Running sub-077
-Computing brightness threshold for smoothing
-Smoothing data
-Smoothing data
-Smoothing data
-Smoothing data
 Generating design matrices
 Designing contrasts
 Fitting a GLM
 Computing contrasts
-	contrast id: response*gain
-	contrast id: response_derivative*gain
-	contrast id: response_dispersion*gain
-	contrast id: response*loss
-	contrast id: response_derivative*loss
-	contrast id: response_dispersion*loss
-	contrast id: response*response
-	contrast id: response_derivative*response
-	contrast id: response_dispersion*response
-Combining contrasts into magnitude images
+response*gain
+[array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ])]
+response
+[array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ])]
+Generating design matrices
+Designing contrasts
+Fitting a GLM
+Computing contrasts
+response*loss
+[array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ])]
+response
+[array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ])]
 
 ------------------------------------------------------------
-Sender: LSF System <lsfadmin@n029>
-Subject: Job 981737: <sub-077> Done
+Sender: LSF System <lsfadmin@n086>
+Subject: Job 7177: <sub-077> Done
 
 Job <sub-077> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
-Job was executed on host(s) <4*n029>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <4*n086>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Mon Feb 11 12:50:15 2019
-Results reported at Mon Feb 11 13:02:47 2019
+Started at Wed Mar  6 15:12:16 2019
+Results reported at Wed Mar  6 15:19:55 2019
 
 Your job looked like:
 
@@ -73,9 +94,9 @@ Successfully completed.
 
 Resource usage summary:
 
-    CPU time   :    929.12 sec.
-    Max Memory :     10995 MB
-    Max Swap   :     12286 MB
+    CPU time   :    739.41 sec.
+    Max Memory :     11701 MB
+    Max Swap   :     12993 MB
 
     Max Processes  :         5
     Max Threads    :        12

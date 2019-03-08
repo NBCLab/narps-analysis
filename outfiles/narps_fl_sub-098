@@ -1,34 +1,59 @@
 Running sub-098
-Computing brightness threshold for smoothing
-Smoothing data
-Smoothing data
-Smoothing data
-Smoothing data
 Generating design matrices
 Designing contrasts
 Fitting a GLM
 Computing contrasts
-	contrast id: response*gain
-	contrast id: response_derivative*gain
-	contrast id: response_dispersion*gain
-	contrast id: response*loss
-	contrast id: response_derivative*loss
-	contrast id: response_dispersion*loss
-	contrast id: response*response
-	contrast id: response_derivative*response
-	contrast id: response_dispersion*response
-Combining contrasts into magnitude images
+response*gain
+[array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ])]
+response
+[array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ])]
+Generating design matrices
+Designing contrasts
+Fitting a GLM
+Computing contrasts
+response*loss
+[array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.  , 0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ])]
+response
+[array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ]), array([0.25, 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ,
+       0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  , 0.  ])]
 
 ------------------------------------------------------------
-Sender: LSF System <lsfadmin@n053>
-Subject: Job 981747: <sub-098> Done
+Sender: LSF System <lsfadmin@n007>
+Subject: Job 7194: <sub-098> Done
 
 Job <sub-098> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
-Job was executed on host(s) <4*n053>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <4*n007>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Mon Feb 11 12:50:15 2019
-Results reported at Mon Feb 11 13:02:28 2019
+Started at Wed Mar  6 15:14:59 2019
+Results reported at Wed Mar  6 15:27:12 2019
 
 Your job looked like:
 
@@ -73,9 +98,9 @@ Successfully completed.
 
 Resource usage summary:
 
-    CPU time   :    892.43 sec.
-    Max Memory :      9783 MB
-    Max Swap   :     11079 MB
+    CPU time   :   1058.02 sec.
+    Max Memory :     11717 MB
+    Max Swap   :     13017 MB
 
     Max Processes  :         5
     Max Threads    :        12

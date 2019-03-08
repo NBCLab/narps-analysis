@@ -1,15 +1,11 @@
-/home/applications/miniconda2.7/4.2.12/miniconda2/bin/python: can't open file '/home/data/nbc/data-analysis/env3/bin/conda': [Errno 2] No such file or directory
-Traceback (most recent call last):
-  File "run_first_level.py", line 15, in <module>
-    import matplotlib.pyplot as plt
-  File "/home/applications/python/2.7.5/lib/python2.7/site-packages/matplotlib/pyplot.py", line 29, in <module>
-    from matplotlib.figure import Figure, figaspect
-  File "/home/applications/python/2.7.5/lib/python2.7/site-packages/matplotlib/figure.py", line 36, in <module>
-    from matplotlib.axes import Axes, SubplotBase, subplot_class_factory
-  File "/home/applications/python/2.7.5/lib/python2.7/site-packages/matplotlib/axes.py", line 39, in <module>
-    import matplotlib.tri as mtri
-  File "/home/applications/python/2.7.5/lib/python2.7/site-packages/matplotlib/tri/__init__.py", line 5, in <module>
-    from triangulation import *
-  File "/home/applications/python/2.7.5/lib/python2.7/site-packages/matplotlib/tri/triangulation.py", line 3, in <module>
-    import matplotlib._tri as _tri
-ImportError: /usr/lib64/libstdc++.so.6: version `GLIBCXX_3.4.15' not found (required by /home/applications/python/2.7.5/lib/python2.7/site-packages/matplotlib/_tri.so)
+/home/data/nbc/data-analysis/env3/lib/python3.6/importlib/_bootstrap.py:205: ImportWarning: can't resolve package from __spec__ or __package__, falling back on __name__ and __path__
+  return f(*args, **kwds)
+/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/experimental_paradigm.py:63: UserWarning: 'modulation' column found in the given events data.
+  warnings.warn("'modulation' column found in the given events data.")
+/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/hemodynamic_models.py:268: DeprecationWarning: object of type <class 'numpy.float64'> cannot be safely interpreted as an integer.
+  frame_times.max() * (1 + 1. / (n - 1)), n_hr)
+/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/hemodynamic_models.py:55: DeprecationWarning: object of type <class 'float'> cannot be safely interpreted as an integer.
+  time_stamps = np.linspace(0, time_length, float(time_length) / dt)
+/home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nilearn-0.5.0-py3.6.egg/nilearn/_utils/cache_mixin.py:232: DeprecationWarning: The 'cachedir' attribute has been deprecated in version 0.12 and will be removed in version 0.14.
+Use os.path.join(memory.location, 'joblib') attribute instead.
+  if (memory.cachedir is None and memory_level is not None

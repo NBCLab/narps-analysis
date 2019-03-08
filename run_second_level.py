@@ -31,6 +31,8 @@ out_loss_dir = op.join(dat_dir, 'group-level-loss')
 out_diff_dir = op.join(dat_dir, 'group-level-diff')
 gain_4d_betas = op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_4d_betas.nii.gz')
 loss_4d_betas = op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_4d_betas.nii.gz')
+gresp_4d_betas = op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-responseFromGain_4d_betas.nii.gz')
+lresp_4d_betas = op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-responseFromLoss_4d_betas.nii.gz')
 dm_file = op.join(tf_dir, 'event_tsvs', 'participants.tsv')
 
 loss_mat = op.join(out_loss_dir, 'design.mat')
@@ -52,16 +54,24 @@ ppt_dummy.drop('group', axis=1, inplace=True)
 # Make a list of beta map files for the gain group level analysis
 gain_betas = []
 loss_betas = []
+gres_betas = []
+lres_betas = []
+
 for sub in ppts.index.values:
     try:
         sub_fl_dir = op.join(dat_dir, 'first-levels', sub)
-        gain_name = '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-gain_betas.nii.gz'.format(sub)
-        gain_file = op.join(sub_fl_dir, gain_name)
+
+        gain_file = op.join(sub_fl_dir, '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-gain_betas.nii.gz'.format(sub))
         gain_betas.append(gain_file)
 
-        loss_name = '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-loss_betas.nii.gz'.format(sub)
-        loss_file = op.join(sub_fl_dir, loss_name)
+        loss_file = op.join(sub_fl_dir, '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-loss_betas.nii.gz'.format(sub))
         loss_betas.append(loss_file)
+
+        gres_file = op.join(sub_fl_dir, '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-responseFromGain_betas.nii.gz'.format(sub))
+        gres_betas.append(gres_file)
+
+        lres_file = op.join(sub_fl_dir, '{0}_task-MGT_space-MNI152NLin2009cAsym_desc-responseFromLoss_betas.nii.gz'.format(sub))
+        lres_betas.append(lres_file)
 
         #And while we're iterating over subjects, calculate avg FramewiseDisplacement
         sub_fp_dir = op.join(tf_dir, 'derivatives/fmriprep', sub, 'func')
@@ -83,10 +93,10 @@ groups = ['equalRange', 'equalIndifference']
 ppt_dummy = ppt_dummy[['equalRange', 'equalIndifference', 'fd', 'gender', 'age']]
 
 # Mean center the confounding variables...
-#for confound in confounds:
-#    mean = np.mean(ppt_dummy[confound])
-#    ppt_dummy['{0}_mc'.format(confound)] = ppt_dummy[confound] - mean
-#    ppt_dummy.drop(confound, axis=1, inplace=True)
+for confound in confounds:
+    mean = np.mean(ppt_dummy[confound])
+    ppt_dummy['{0}_mc'.format(confound)] = ppt_dummy[confound] - mean
+    ppt_dummy.drop(confound, axis=1, inplace=True)
 
 ppt_dummy['subject_label'] = ppt_dummy.index
 
@@ -112,10 +122,10 @@ for mat in [gain_mat, loss_mat]:
     dmat_file.write('\n/Matrix\n')
     for i in dmat.index:
         dmat_file.writelines('{0}\t{1}\t{2}\t{3}\t{4}\n'.format(dmat.iloc[i, 0],
-                                                              dmat.iloc[i, 1],
-                                                              dmat.iloc[i, 2],
-                                                              dmat.iloc[i, 3],
-                                                              dmat.iloc[i, 4]))
+                                                                dmat.iloc[i, 1],
+                                                                dmat.iloc[i, 2],
+                                                                dmat.iloc[i, 3],
+                                                                dmat.iloc[i, 4]))
         covariates.append(dmat.iloc[i] for i in dmat.index)
     dmat_file.close()
 
@@ -160,6 +170,8 @@ print('merging betas!')
 merger = Merge(dimension='t', output_type='NIFTI_GZ')
 gains = merger.run(in_files=gain_betas, merged_file=gain_4d_betas)
 losses = merger.run(in_files=loss_betas, merged_file=loss_4d_betas)
+gresp = merger.run(in_files=gres_betas, merged_file=gresp_4d_betas)
+lresp = merger.run(in_files=lres_betas, merged_file=lresp_4d_betas)
 
 # Perform sanity check: do design matrices match length of 4d betas?
 print('loss betas: {0}\ngain betas: {1}\ndmat subjects: {2}\n.mat length: {3}'.format(len(loss_betas), len(gain_betas), len(dmat.index), len(covariates)))
@@ -169,13 +181,28 @@ assert len(gain_betas) == len(covariates), 'number of gain beta maps does not eq
 assert len(loss_betas) == len(covariates), 'number of loss beta maps does not equal number of subjects in design.mat'
 
 # Run the models, nonparametrically, using Randomise
-random = Randomise(num_perm=10000, cm_thresh=2.3, demean=True)
+random = Randomise(num_perm=10000, c_thresh=2.6896)
+
 pre_rand = datetime.now()
-print('{0}: about to randomise!'.format(pre_rand))
+print('{0}: about to randomise gain responses!'.format(pre_rand))
+random.run(in_file=gresp_4d_betas, one_sample_group_mean=True, base_name=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-responseFromGain_randomise'))
+gain_time = datetime.now() - pre_rand
+print('{0}: gain responses done! took {1} s.'.format(datetime.now(), gain_time))
+
+pre_rand = datetime.now()
+print('{0}: about to randomise loss responses!'.format(pre_rand))
+random.run(in_file=lresp_4d_betas, one_sample_group_mean=True, base_name=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-responseFromLoss_randomise'))
+loss_time = datetime.now() - pre_rand
+print('{0}: loss responses done! took {1} s.'.format(datetime.now(), loss_time))
+
+pre_rand = datetime.now()
+print('{0}: about to randomise losses!'.format(pre_rand))
 random.run(in_file=loss_4d_betas, tcon=loss_con, design_mat=loss_mat, base_name=op.join(out_loss_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-loss_randomise'))
 loss_time = datetime.now() - pre_rand
-pre_rand = datetime.now()
 print('{0}: losses done! took {1} s.'.format(pre_rand, loss_time))
+
+pre_rand = datetime.now()
+print('{0}: about to randomise gains!'.format(pre_rand))
 random.run(in_file=gain_4d_betas, tcon=gain_con, design_mat=gain_mat, base_name=op.join(out_gain_dir, 'task-MGT_space-MNI152NLin2009cAsym_desc-gain_randomise'))
 gain_time = datetime.now() - pre_rand
-print('{0}: losses done! took {1} s.'.format(datetime.now(), gain_time))
+print('{0}: gains done! took {1} s.'.format(datetime.now(), gain_time))

@@ -1,15 +1,15 @@
 Running sub-007
 
 ------------------------------------------------------------
-Sender: LSF System <lsfadmin@n010>
-Subject: Job 7115: <sub-007> Exited
+Sender: LSF System <lsfadmin@n085>
+Subject: Job 7544: <sub-007> Exited
 
 Job <sub-007> was submitted from host <v001> by user <tsalo006> in cluster <panther>.
-Job was executed on host(s) <4*n010>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
+Job was executed on host(s) <4*n085>, in queue <PQ_nbc>, as user <tsalo006> in cluster <panther>.
 </home/tsalo006> was used as the home directory.
 </home/data/nbc/Laird_NARPS/code> was used as the working directory.
-Started at Wed Mar  6 15:04:22 2019
-Results reported at Wed Mar  6 15:04:34 2019
+Started at Thu Mar  7 16:53:05 2019
+Results reported at Thu Mar  7 16:53:19 2019
 
 Your job looked like:
 
@@ -54,7 +54,7 @@ Exited with exit code 1.
 
 Resource usage summary:
 
-    CPU time   :      6.25 sec.
+    CPU time   :      4.47 sec.
     Max Memory :         1 MB
     Max Swap   :        46 MB
 

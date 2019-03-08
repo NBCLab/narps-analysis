@@ -1,3 +1,5 @@
+/home/data/nbc/data-analysis/env3/bin/activate: line 86: /home/data/nbc/data-analysis/env3/bin/conda: No such file or directory
+/home/data/nbc/data-analysis/env3/bin/activate: line 86: [: =: unary operator expected
 /home/data/nbc/data-analysis/env3/lib/python3.6/importlib/_bootstrap.py:205: ImportWarning: can't resolve package from __spec__ or __package__, falling back on __name__ and __path__
   return f(*args, **kwds)
 /home/data/nbc/data-analysis/env3/lib/python3.6/site-packages/nistats/experimental_paradigm.py:63: UserWarning: 'modulation' column found in the given events data.
